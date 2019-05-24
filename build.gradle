@@ -1,6 +1,7 @@
 plugins {
     id 'groovy'
     id 'java'
+    id 'application'
 }
 
 group 'com.evbox.ghn1712'
@@ -21,4 +22,18 @@ dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.5.7'
     testCompile "org.spockframework:spock-core:1.3-groovy-2.5"
     testCompile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+}
+
+application {
+    mainClassName = 'com.evbox.ghn1712.charging.Application'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.evbox.ghn1712.charging.Application"
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
