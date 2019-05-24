@@ -14,6 +14,6 @@ public interface ChargingSessionGateway {
     Collection<ChargingSession> getAllChargingSessions();
     ChargingSessionSummary getSummary(LocalDateTime fromDateTime);
     Optional<ChargingSession> getChargingSessionById(UUID id);
-    Optional<ChargingSession> getChargingSessionByStartedAt(LocalDateTime startedAt);
+    Collection<ChargingSession> getChargingSessionByStartedAt(LocalDateTime startedAt);
     void drop();
 }

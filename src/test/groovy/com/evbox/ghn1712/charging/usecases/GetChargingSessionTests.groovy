@@ -3,8 +3,6 @@ package com.evbox.ghn1712.charging.usecases
 import com.evbox.ghn1712.charging.ChargingSessionFixture
 import com.evbox.ghn1712.charging.gateways.ChargingSessionInMemoryRepository
 import com.evbox.ghn1712.charging.gateways.LocalTimeGateway
-import org.awaitility.Awaitility
-import org.awaitility.Duration
 import spock.lang.Specification
 
 class GetChargingSessionTests extends Specification {
@@ -45,12 +43,12 @@ class GetChargingSessionTests extends Specification {
     def "get charging session summary when there are sessions"() {
         given: "there are charging sessions"
         def chargingSession = ChargingSessionFixture.createChargingSession()
-        chargingSession.startedAt = timeGateway.now
+        def now = timeGateway.now
+        chargingSession.startedAt = now
         gateway.createChargingSession(chargingSession)
         def anotherChargingSession = ChargingSessionFixture.createChargingSession()
-        Awaitility.await().atMost(Duration.ONE_MILLISECOND)
-        anotherChargingSession.startedAt = timeGateway.now
-        anotherChargingSession.id == UUID.fromString("8fc68a9b-d6b1-4fd4-a8b8-106bdb4169b5")
+        anotherChargingSession.startedAt = now
+        anotherChargingSession.id = UUID.fromString("8fc68a9b-d6b1-4fd4-a8b8-106bdb4169b5")
         gateway.createChargingSession(anotherChargingSession)
         gateway.stopChargingSession(UUID.fromString("d1a92174-ccd5-4f2d-b36b-c2b6fedc8722"))
         when: "getting charging session summary"

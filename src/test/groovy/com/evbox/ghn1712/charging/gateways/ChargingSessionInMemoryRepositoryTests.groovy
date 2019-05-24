@@ -21,8 +21,8 @@ class ChargingSessionInMemoryRepositoryTests extends Specification {
         def getById = repository.getChargingSessionById(chargingSession.id)
         def getByDate = repository.getChargingSessionByStartedAt(chargingSession.startedAt)
         getById.isPresent()
-        getByDate.isPresent()
-        def chargingSessionByDate = getByDate.get()
+        getByDate.size() == 1
+        def chargingSessionByDate = getByDate[0]
         def chargingSessionById = getById.get()
         chargingSessionById.id == chargingSession.id
         chargingSessionByDate.id == chargingSession.id
@@ -33,8 +33,8 @@ class ChargingSessionInMemoryRepositoryTests extends Specification {
         chargingSessionById.status == chargingSession.status
         chargingSessionByDate.status == chargingSession.status
         !repository.getChargingSessionById(UUID.fromString("fcb97b3c-0275-4df3-9969-b49a14a23a65")).isPresent()
-        !repository.getChargingSessionByStartedAt(LocalDateTime.of(2019, 5, 5, 5,
-                4)).isPresent()
+        repository.getChargingSessionByStartedAt(LocalDateTime.of(2019, 5, 5, 5,
+                4)).isEmpty()
     }
 
     def "stop a charging session that doesn't exist"() {
@@ -58,7 +58,7 @@ class ChargingSessionInMemoryRepositoryTests extends Specification {
         response.isPresent()
         repository.allChargingSessions.size() == 1
         repository.getChargingSessionById(chargingSession.id).get().status == StatusEnum.FINISHED
-        repository.getChargingSessionByStartedAt(chargingSession.startedAt).get().status == StatusEnum.FINISHED
+        repository.getChargingSessionByStartedAt(chargingSession.startedAt)[0].status == StatusEnum.FINISHED
         !repository.allChargingSessions.any { session -> session.status == StatusEnum.IN_PROGRESS }
     }
 
@@ -90,7 +90,7 @@ class ChargingSessionInMemoryRepositoryTests extends Specification {
         given: "two charging session was created since from date time"
         repository.createChargingSession(ChargingSessionFixture.createChargingSession())
         def chargingSession = new ChargingSession(UUID.fromString("63abf086-0784-4f09-96a7-6be1cfad7200"),
-                "anotherStation", LocalDateTime.of(2019, 5, 5, 5, 6),
+                "anotherStation", LocalDateTime.of(2019, 5, 5, 5, 5),
                 StatusEnum.IN_PROGRESS)
         repository.createChargingSession(chargingSession)
         and: "one charging session was finished"
@@ -108,7 +108,7 @@ class ChargingSessionInMemoryRepositoryTests extends Specification {
     def "get summary when there is one finished charging session"() {
         given: "one charging session was created since from date time"
         def chargingSession = new ChargingSession(UUID.fromString("63abf086-0784-4f09-96a7-6be1cfad7200"),
-                "anotherStation", LocalDateTime.of(2019, 5, 5, 5, 6),
+                "anotherStation", LocalDateTime.of(2019, 5, 5, 5, 5),
                 StatusEnum.IN_PROGRESS)
         repository.createChargingSession(chargingSession)
         repository.stopChargingSession(chargingSession.id)
