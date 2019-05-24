@@ -10,10 +10,10 @@ public class Application {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new ChargingModule());
-        startApplication(injector);
+        startApplication(injector, 8080);
     }
 
-    public static void startApplication(Injector injector) {
-        ApplicationServer.startServer(injector);
+    public static void startApplication(Injector injector, int port) {
+        ApplicationServer.startServer(injector, port);
     }
 }

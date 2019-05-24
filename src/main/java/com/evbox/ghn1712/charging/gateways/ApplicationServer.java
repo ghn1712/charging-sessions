@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public class ApplicationServer {
 
-    public static void startServer(Injector injector) {
+    public static void startServer(Injector injector, int port) {
         ObjectMapper serializer = injector.getInstance(ObjectMapper.class);
         JavalinJackson.configure(serializer);
-        Javalin server = Javalin.create().enableCaseSensitiveUrls().start(8080);
+        Javalin server = Javalin.create().enableCaseSensitiveUrls().start(port);
         createRoutes(server, injector);
     }
 
